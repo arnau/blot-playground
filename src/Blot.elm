@@ -40,7 +40,7 @@ hash blob =
                         Nothing
 
                     else
-                        Just ( name, VString (Seal.toString seal) )
+                        Just ( name, VString (Seal.toStringWithPrefix seal) )
 
                 Set xs ->
                     let
@@ -55,7 +55,8 @@ hash blob =
                             ( name
                             , xs_
                                 |> Array.toList
-                                |> List.map (VString << Seal.toString)
+                                |> List.map
+                                    (VString << Seal.toStringWithPrefix)
                                 |> VSet
                             )
     in
@@ -83,7 +84,7 @@ steps blob =
                         Nothing
 
                     else
-                        Just ( name, Leaf <| Hash.unicode (Seal.toString seal) )
+                        Just ( name, Leaf <| Seal.hash seal )
 
                 Set xs ->
                     let
@@ -99,7 +100,7 @@ steps blob =
                             , SetBlot
                                 (xs_
                                     |> Array.toList
-                                    |> List.map (Hash.unicode << Seal.toString)
+                                    |> List.map Seal.hash
                                 )
                             )
 

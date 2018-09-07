@@ -1,6 +1,7 @@
 module Seal exposing
     ( Seal(..)
     , empty
+    , hash
     , isEmpty
     , isRedacted
     , map
@@ -147,3 +148,13 @@ toStringWithPrefix seal =
 
         Redacted str bytes ->
             "**REDACTED**" ++ Hash.toHex bytes
+
+
+hash : Seal -> Bytes
+hash seal =
+    case seal of
+        Open str ->
+            Hash.unicode str
+
+        Redacted _ bytes ->
+            bytes

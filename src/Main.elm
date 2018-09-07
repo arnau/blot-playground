@@ -142,7 +142,11 @@ style attributes children =
 viewSeal : String -> ( Int, Seal ) -> Html Msg
 viewSeal name ( idx, seal ) =
     div []
-        [ input [ At.value (Seal.toString seal), onInput (ChangeVal name idx) ]
+        [ input
+            [ At.value (Seal.toStringWithPrefix seal)
+            , onInput (ChangeVal name idx)
+            , At.disabled (Seal.isRedacted seal)
+            ]
             []
         , button
             [ onClick (SealToggle idx name)
