@@ -7135,6 +7135,70 @@ var author$project$Main$addPair = F2(
 				author$project$Value$empty(card),
 				blob));
 	});
+var author$project$Seal$open = function (seal) {
+	if (seal.$ === 'Redacted') {
+		var str = seal.a;
+		var bytes = seal.b;
+		return author$project$Seal$Open(str);
+	} else {
+		return seal;
+	}
+};
+var author$project$Seal$redact = function (seal) {
+	if (seal.$ === 'Open') {
+		var str = seal.a;
+		return A2(
+			author$project$Seal$Redacted,
+			str,
+			arnau$elm_objecthash$Objecthash$Hash$unicode(str));
+	} else {
+		return seal;
+	}
+};
+var author$project$Seal$toggle = function (seal) {
+	if (seal.$ === 'Open') {
+		return author$project$Seal$redact(seal);
+	} else {
+		return author$project$Seal$open(seal);
+	}
+};
+var author$project$Value$redact = F2(
+	function (idx, value) {
+		if (value.$ === 'String') {
+			var seal = value.a;
+			return author$project$Value$String(
+				author$project$Seal$toggle(seal));
+		} else {
+			var xs = value.a;
+			var seal = A2(
+				elm$core$Maybe$withDefault,
+				author$project$Seal$empty,
+				A2(elm$core$Array$get, idx, xs));
+			return author$project$Value$Set(
+				A3(
+					elm$core$Array$set,
+					idx,
+					author$project$Seal$toggle(seal),
+					xs));
+		}
+	});
+var author$project$Main$toggleSeal = F3(
+	function (idx, name, blob) {
+		var _n0 = A2(author$project$Blob$get, name, blob);
+		if (_n0.$ === 'Nothing') {
+			return blob;
+		} else {
+			var value = _n0.a;
+			return A2(
+				elm$core$Result$withDefault,
+				blob,
+				A3(
+					author$project$Blob$update,
+					name,
+					A2(author$project$Value$redact, idx, value),
+					blob));
+		}
+	});
 var elm$core$Tuple$second = function (_n0) {
 	var y = _n0.b;
 	return y;
@@ -7198,7 +7262,7 @@ var author$project$Main$update = F2(
 					{
 						source: A2(author$project$Blob$remove, name, model.source)
 					});
-			default:
+			case 'AddNext':
 				var _n1 = model.next;
 				if (_n1.a === '') {
 					return model;
@@ -7210,6 +7274,14 @@ var author$project$Main$update = F2(
 							source: A2(author$project$Main$addPair, model.next, model.source)
 						});
 				}
+			default:
+				var idx = msg.a;
+				var name = msg.b;
+				return _Utils_update(
+					model,
+					{
+						source: A3(author$project$Main$toggleSeal, idx, name, model.source)
+					});
 		}
 	});
 var elm$core$Result$isOk = function (result) {
@@ -7473,6 +7545,32 @@ var author$project$Main$ChangeVal = F3(
 	function (a, b, c) {
 		return {$: 'ChangeVal', a: a, b: b, c: c};
 	});
+var author$project$Main$SealToggle = F2(
+	function (a, b) {
+		return {$: 'SealToggle', a: a, b: b};
+	});
+var author$project$Seal$isEmpty = function (seal) {
+	if (seal.$ === 'Open') {
+		if (seal.a === '') {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		if (seal.a === '') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+};
+var author$project$Seal$isRedacted = function (seal) {
+	if (seal.$ === 'Open') {
+		return false;
+	} else {
+		return true;
+	}
+};
 var arnau$elm_objecthash$Word$Hex$fromByte = arnau$elm_objecthash$Word$Hex$fromInt(2);
 var arnau$elm_objecthash$Word$Hex$fromList = function (toHex) {
 	return A2(
@@ -7489,17 +7587,30 @@ var arnau$elm_objecthash$Word$Hex$fromByteList = arnau$elm_objecthash$Word$Hex$f
 var arnau$elm_objecthash$Objecthash$Hash$toHex = function (bytes_) {
 	return arnau$elm_objecthash$Word$Hex$fromByteList(bytes_);
 };
-var author$project$Seal$toString = function (seal) {
+var author$project$Seal$toStringWithPrefix = function (seal) {
 	if (seal.$ === 'Open') {
 		var str = seal.a;
 		return str;
 	} else {
 		var str = seal.a;
 		var bytes = seal.b;
-		return arnau$elm_objecthash$Objecthash$Hash$toHex(bytes);
+		return '**REDACTED**' + arnau$elm_objecthash$Objecthash$Hash$toHex(bytes);
 	}
 };
+var elm$html$Html$button = _VirtualDom_node('button');
+var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var elm$json$Json$Encode$bool = _Json_wrap;
+var elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$bool(bool));
+	});
+var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
 var elm$json$Json$Encode$string = _Json_wrap;
 var elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -7509,13 +7620,29 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
 var elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
 var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
 	return {$: 'MayStopPropagation', a: a};
 };
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var elm$html$Html$Events$stopPropagationOn = F2(
 	function (event, decoder) {
 		return A2(
@@ -7548,15 +7675,37 @@ var author$project$Main$viewSeal = F2(
 		var idx = _n0.a;
 		var seal = _n0.b;
 		return A2(
-			elm$html$Html$input,
+			elm$html$Html$div,
+			_List_Nil,
 			_List_fromArray(
 				[
-					elm$html$Html$Attributes$value(
-					author$project$Seal$toString(seal)),
-					elm$html$Html$Events$onInput(
-					A2(author$project$Main$ChangeVal, name, idx))
-				]),
-			_List_Nil);
+					A2(
+					elm$html$Html$input,
+					_List_fromArray(
+						[
+							elm$html$Html$Attributes$value(
+							author$project$Seal$toStringWithPrefix(seal)),
+							elm$html$Html$Events$onInput(
+							A2(author$project$Main$ChangeVal, name, idx)),
+							elm$html$Html$Attributes$disabled(
+							author$project$Seal$isRedacted(seal))
+						]),
+					_List_Nil),
+					A2(
+					elm$html$Html$button,
+					_List_fromArray(
+						[
+							elm$html$Html$Events$onClick(
+							A2(author$project$Main$SealToggle, idx, name)),
+							elm$html$Html$Attributes$disabled(
+							author$project$Seal$isEmpty(seal))
+						]),
+					_List_fromArray(
+						[
+							elm$html$Html$text(
+							author$project$Seal$isRedacted(seal) ? 'Open' : 'Redact')
+						]))
+				]));
 	});
 var elm$core$Array$toIndexedList = function (array) {
 	var len = array.a;
@@ -7576,25 +7725,6 @@ var elm$core$Array$toIndexedList = function (array) {
 		helper,
 		_Utils_Tuple2(len - 1, _List_Nil),
 		array).b;
-};
-var elm$html$Html$button = _VirtualDom_node('button');
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
 };
 var author$project$Main$viewValue = F2(
 	function (name, value) {
@@ -7663,7 +7793,6 @@ var author$project$Main$viewValue = F2(
 					]));
 		}
 	});
-var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
@@ -7870,19 +7999,13 @@ var author$project$Blot$reduce_ = F2(
 var author$project$Blot$reduce = function (blot) {
 	return A2(author$project$Blot$reduce_, blot, _List_Nil);
 };
-var author$project$Seal$isEmpty = function (seal) {
+var author$project$Seal$hash = function (seal) {
 	if (seal.$ === 'Open') {
-		if (seal.a === '') {
-			return true;
-		} else {
-			return false;
-		}
+		var str = seal.a;
+		return arnau$elm_objecthash$Objecthash$Hash$unicode(str);
 	} else {
-		if (seal.a === '') {
-			return true;
-		} else {
-			return false;
-		}
+		var bytes = seal.b;
+		return bytes;
 	}
 };
 var elm$core$Array$filter = F2(
@@ -7896,11 +8019,6 @@ var elm$core$Array$filter = F2(
 					}),
 				_List_Nil,
 				array));
-	});
-var elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
 	});
 var elm$core$Basics$not = _Basics_not;
 var elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
@@ -8054,8 +8172,7 @@ var author$project$Blot$steps = function (blob) {
 				_Utils_Tuple2(
 					name,
 					author$project$Blot$Leaf(
-						arnau$elm_objecthash$Objecthash$Hash$unicode(
-							author$project$Seal$toString(seal)))));
+						author$project$Seal$hash(seal))));
 		} else {
 			var xs = value.a;
 			var xs_ = A2(
@@ -8070,7 +8187,7 @@ var author$project$Blot$steps = function (blob) {
 					author$project$Blot$SetBlot(
 						A2(
 							elm$core$List$map,
-							A2(elm$core$Basics$composeL, arnau$elm_objecthash$Objecthash$Hash$unicode, author$project$Seal$toString),
+							author$project$Seal$hash,
 							elm$core$Array$toList(xs_)))));
 		}
 	};
@@ -8268,14 +8385,6 @@ var author$project$Main$ChangeNextValue = function (a) {
 };
 var elm$html$Html$option = _VirtualDom_node('option');
 var elm$html$Html$select = _VirtualDom_node('select');
-var elm$json$Json$Encode$bool = _Json_wrap;
-var elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$bool(bool));
-	});
 var elm$html$Html$Attributes$selected = elm$html$Html$Attributes$boolProperty('selected');
 var author$project$Main$viewToolbar = function (next) {
 	var card = author$project$Blob$cardinalityToString(next.b);
