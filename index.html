@@ -8390,6 +8390,10 @@ var author$project$Main$viewBlot = function (blot) {
 					[blot]))
 			]));
 };
+var elm$core$String$left = F2(
+	function (n, string) {
+		return (n < 1) ? '' : A3(elm$core$String$slice, 0, n, string);
+	});
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
@@ -8412,7 +8416,7 @@ var author$project$Main$viewDictLeave = function (bytes) {
 		_List_fromArray(
 			[
 				elm$html$Html$text(
-				A2(elm$core$String$right, 64, hex))
+				A2(elm$core$String$left, 64, hex))
 			]));
 	var val = A2(
 		elm$html$Html$span,
@@ -8939,10 +8943,6 @@ var elm$core$String$indexes = _String_indexes;
 var elm$core$String$isEmpty = function (string) {
 	return string === '';
 };
-var elm$core$String$left = F2(
-	function (n, string) {
-		return (n < 1) ? '' : A3(elm$core$String$slice, 0, n, string);
-	});
 var elm$core$String$contains = _String_contains;
 var elm$core$String$toInt = _String_toInt;
 var elm$url$Url$Url = F6(

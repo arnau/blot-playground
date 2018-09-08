@@ -398,7 +398,7 @@ viewDictLeave bytes =
             span [ At.style "color" "hotpink" ] [ text (String.right 64 hex) ]
 
         name =
-            span [ At.style "color" "cornflowerblue" ] [ text (String.right 64 hex) ]
+            span [ At.style "color" "cornflowerblue" ] [ text (String.left 64 hex) ]
     in
     viewBlot <| span [] [ name, val ]
 
