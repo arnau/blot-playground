@@ -3,6 +3,8 @@ module Seal exposing
     , empty
     , hash
     , isEmpty
+    , isLocked
+    , isOpen
     , isRedacted
     , map
     , open
@@ -53,6 +55,16 @@ isEmpty seal =
             False
 
 
+isOpen : Seal -> Bool
+isOpen seal =
+    case seal of
+        Open str ->
+            True
+
+        Redacted _ _ ->
+            False
+
+
 isRedacted : Seal -> Bool
 isRedacted seal =
     case seal of
@@ -63,14 +75,30 @@ isRedacted seal =
             True
 
 
-toggle : Seal -> Seal
-toggle seal =
+{-| The original string is redacted
+-}
+isLocked : Seal -> Bool
+isLocked seal =
     case seal of
         Open _ ->
-            redact seal
+            False
 
-        Redacted _ _ ->
-            open seal
+        Redacted str _ ->
+            isTokenRedacted str
+
+
+toggle : Seal -> Seal
+toggle seal =
+    if isLocked seal then
+        seal
+
+    else
+        case seal of
+            Open _ ->
+                redact seal
+
+            Redacted str _ ->
+                open seal
 
 
 open : Seal -> Seal
@@ -107,9 +135,20 @@ map fn seal =
             Redacted str_ (Hash.unicode str_)
 
 
+isTokenRedacted : String -> Bool
+isTokenRedacted token =
+    String.startsWith "**REDACTED**" token
+        && (String.length token == 76)
+        && String.all Char.isHexDigit (String.dropLeft 12 token)
+
+
 update : String -> Seal -> Seal
 update value seal =
-    map (\_ -> value) seal
+    if isTokenRedacted value then
+        Redacted value (Hash.redacted value)
+
+    else
+        map (\_ -> value) seal
 
 
 {-| Returns either the open string or the hex representation of the hashed

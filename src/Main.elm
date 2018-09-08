@@ -152,9 +152,27 @@ viewSeal name ( idx, seal ) =
             , onInput (ChangeVal name idx)
             , At.disabled (Seal.isRedacted seal)
             , At.style "color" "hotpink"
+            , At.style "width" "75%"
+            , At.style "display" "inline-block"
+            , At.style "margin-right" "8px"
             ]
             []
-        , button
+        , redactButton ( idx, name ) seal
+        ]
+
+
+redactButton : ( Int, String ) -> Seal -> Html Msg
+redactButton ( idx, name ) seal =
+    let
+        _ =
+            Debug.log "" seal
+    in
+    -- The original string is redacted
+    if Seal.isLocked seal then
+        text ""
+
+    else
+        button
             [ onClick (SealToggle idx name)
             , At.disabled (Seal.isEmpty seal)
             ]
@@ -166,7 +184,6 @@ viewSeal name ( idx, seal ) =
                     "Redact"
                 )
             ]
-        ]
 
 
 viewValue : String -> Value.Value -> List (Html Msg)
@@ -174,7 +191,12 @@ viewValue name value =
     case value of
         String seal ->
             [ viewSeal name ( 0, seal )
-            , button [ onClick (Remove name) ] [ text "Remove" ]
+            , div
+                [ At.style "background-color" "#ececec"
+                , At.style "margin" "8px 0 0"
+                , At.style "padding" "4px"
+                ]
+                [ button [ onClick (Remove name) ] [ text "Remove" ] ]
             ]
 
         Set xs ->
@@ -182,19 +204,28 @@ viewValue name value =
                 |> Array.toIndexedList
                 |> List.map (viewSeal name)
             )
-                ++ [ button [ onClick (AddValue name) ] [ text "+" ]
-                   , button [ onClick (RemoveValue name) ] [ text "-" ]
-                   , button [ onClick (Remove name) ] [ text "Remove" ]
+                ++ [ div
+                        [ At.style "background-color" "#ececec"
+                        , At.style "margin" "8px 0 0"
+                        , At.style "padding" "4px"
+                        ]
+                        [ button [ onClick (AddValue name) ] [ text "+" ]
+                        , button [ onClick (RemoveValue name) ] [ text "-" ]
+                        , button [ onClick (Remove name) ] [ text "Remove" ]
+                        ]
                    ]
 
 
 viewPair : ( String, Value.Value ) -> Html Msg
 viewPair ( name, value ) =
-    div []
+    div
+        [ At.style "background-color" "#f3f3f3"
+        , At.style "margin" "8px 0"
+        , At.style "padding" "8px"
+        ]
         ([ span
-            [ At.style "background-color" "#f3f3f3"
-            , At.style "display" "inline-block"
-            , At.style "padding" "4px"
+            [ At.style "display" "inline-block"
+            , At.style "margin" "4px 0"
             ]
             [ input
                 [ At.id (name ++ "-attr")
@@ -203,7 +234,7 @@ viewPair ( name, value ) =
                 , At.style "color" "cornflowerblue"
                 ]
                 []
-            , text ": "
+            , text " : "
             ]
          ]
             ++ viewValue name value

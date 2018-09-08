@@ -4763,6 +4763,101 @@ var author$project$Blob$cardinalityFromString = function (input) {
 			return author$project$Value$One;
 	}
 };
+var elm$core$Basics$lt = _Utils_lt;
+var elm$core$Char$toCode = _Char_toCode;
+var arnau$elm_objecthash$Word$Hex$hexFromChar = function (_char) {
+	var x = elm$core$Char$toCode(_char);
+	return (x < 65) ? (x - 48) : ((x > 70) ? (x - 87) : (x - 55));
+};
+var elm$core$Basics$mul = _Basics_mul;
+var elm$core$Basics$pow = _Basics_pow;
+var elm$core$List$append = F2(
+	function (xs, ys) {
+		if (!ys.b) {
+			return xs;
+		} else {
+			return A3(elm$core$List$foldr, elm$core$List$cons, ys, xs);
+		}
+	});
+var arnau$elm_objecthash$Word$Hex$accHex2 = F2(
+	function (chars, acc) {
+		accHex2:
+		while (true) {
+			if (chars.b) {
+				if (chars.b.b) {
+					var h = chars.a;
+					var _n1 = chars.b;
+					var l = _n1.a;
+					var rest = _n1.b;
+					var _n2 = _Utils_Tuple2(
+						arnau$elm_objecthash$Word$Hex$hexFromChar(h),
+						arnau$elm_objecthash$Word$Hex$hexFromChar(l));
+					var x1 = _n2.a;
+					var x0 = _n2.b;
+					var acc2 = function (_byte) {
+						return A2(
+							elm$core$List$append,
+							acc,
+							_List_fromArray(
+								[_byte]));
+					}(
+						(x1 * A2(elm$core$Basics$pow, 2, 4)) + x0);
+					var $temp$chars = rest,
+						$temp$acc = acc2;
+					chars = $temp$chars;
+					acc = $temp$acc;
+					continue accHex2;
+				} else {
+					return _List_Nil;
+				}
+			} else {
+				return acc;
+			}
+		}
+	});
+var elm$core$String$foldr = _String_foldr;
+var elm$core$String$toList = function (string) {
+	return A3(elm$core$String$foldr, elm$core$List$cons, _List_Nil, string);
+};
+var arnau$elm_objecthash$Word$Hex$toByteList = function (hex) {
+	return A2(
+		arnau$elm_objecthash$Word$Hex$accHex2,
+		elm$core$String$toList(hex),
+		_List_Nil);
+};
+var elm$core$String$length = _String_length;
+var elm$core$String$slice = _String_slice;
+var elm$core$String$dropLeft = F2(
+	function (n, string) {
+		return (n < 1) ? string : A3(
+			elm$core$String$slice,
+			n,
+			elm$core$String$length(string),
+			string);
+	});
+var arnau$elm_objecthash$Objecthash$Hash$redacted = function (input) {
+	return arnau$elm_objecthash$Word$Hex$toByteList(
+		A2(elm$core$String$dropLeft, 12, input));
+};
+var author$project$Seal$Redacted = F2(
+	function (a, b) {
+		return {$: 'Redacted', a: a, b: b};
+	});
+var elm$core$Basics$and = _Basics_and;
+var elm$core$Basics$le = _Utils_le;
+var elm$core$Basics$or = _Basics_or;
+var elm$core$Char$isHexDigit = function (_char) {
+	var code = elm$core$Char$toCode(_char);
+	return ((48 <= code) && (code <= 57)) || (((65 <= code) && (code <= 70)) || ((97 <= code) && (code <= 102)));
+};
+var elm$core$String$all = _String_all;
+var elm$core$String$startsWith = _String_startsWith;
+var author$project$Seal$isTokenRedacted = function (token) {
+	return A2(elm$core$String$startsWith, '**REDACTED**', token) && ((elm$core$String$length(token) === 76) && A2(
+		elm$core$String$all,
+		elm$core$Char$isHexDigit,
+		A2(elm$core$String$dropLeft, 12, token)));
+};
 var arnau$elm_objecthash$Crypto$SHA$Alg$SHA256 = {$: 'SHA256'};
 var arnau$elm_objecthash$Crypto$SHA$Alg$SHA512 = {$: 'SHA512'};
 var arnau$elm_objecthash$Word$Bit32 = {$: 'Bit32'};
@@ -4826,7 +4921,6 @@ var elm$core$Basics$composeR = F3(
 		return g(
 			f(x));
 	});
-var elm$core$Basics$mul = _Basics_mul;
 var arnau$elm_objecthash$Crypto$SHA$Chunk$sizeInBits = A2(
 	elm$core$Basics$composeR,
 	arnau$elm_objecthash$Crypto$SHA$Chunk$sizeInBytes,
@@ -4868,16 +4962,6 @@ var arnau$elm_objecthash$Crypto$SHA$Preprocess$calculateK = F2(
 			((c - 1) - (8 * arnau$elm_objecthash$Crypto$SHA$Preprocess$messageSizeBytes(alg))) - A2(elm$core$Basics$modBy, c, l));
 	});
 var elm$core$Basics$idiv = _Basics_idiv;
-var elm$core$Basics$pow = _Basics_pow;
-var elm$core$List$append = F2(
-	function (xs, ys) {
-		if (!ys.b) {
-			return xs;
-		} else {
-			return A3(elm$core$List$foldr, elm$core$List$cons, ys, xs);
-		}
-	});
-var elm$core$Basics$le = _Utils_le;
 var elm$core$List$rangeHelp = F3(
 	function (lo, hi, list) {
 		rangeHelp:
@@ -5429,8 +5513,6 @@ var elm$core$Array$getHelp = F3(
 var elm$core$Array$tailIndex = function (len) {
 	return (len >>> 5) << 5;
 };
-var elm$core$Basics$lt = _Utils_lt;
-var elm$core$Basics$or = _Basics_or;
 var elm$core$Array$get = F2(
 	function (index, _n0) {
 		var len = _n0.a;
@@ -6646,11 +6728,6 @@ var arnau$elm_objecthash$Word$Bytes$splitUtf8 = function (x) {
 		[192 | ((1984 & x) >>> 6), 128 | (63 & x)]) : _List_fromArray(
 		[224 | ((61440 & x) >>> 12), 128 | ((4032 & x) >>> 6), 128 | (63 & x)]));
 };
-var elm$core$Char$toCode = _Char_toCode;
-var elm$core$String$foldr = _String_foldr;
-var elm$core$String$toList = function (string) {
-	return A3(elm$core$String$foldr, elm$core$List$cons, _List_Nil, string);
-};
 var arnau$elm_objecthash$Word$Bytes$fromUTF8 = A2(
 	elm$core$Basics$composeR,
 	elm$core$String$toList,
@@ -6665,52 +6742,6 @@ var arnau$elm_objecthash$Word$Bytes$fromUTF8 = A2(
 						elm$core$Char$toCode(_char)));
 			}),
 		_List_Nil));
-var arnau$elm_objecthash$Word$Hex$hexFromChar = function (_char) {
-	var x = elm$core$Char$toCode(_char);
-	return (x < 65) ? (x - 48) : ((x > 70) ? (x - 87) : (x - 55));
-};
-var arnau$elm_objecthash$Word$Hex$accHex2 = F2(
-	function (chars, acc) {
-		accHex2:
-		while (true) {
-			if (chars.b) {
-				if (chars.b.b) {
-					var h = chars.a;
-					var _n1 = chars.b;
-					var l = _n1.a;
-					var rest = _n1.b;
-					var _n2 = _Utils_Tuple2(
-						arnau$elm_objecthash$Word$Hex$hexFromChar(h),
-						arnau$elm_objecthash$Word$Hex$hexFromChar(l));
-					var x1 = _n2.a;
-					var x0 = _n2.b;
-					var acc2 = function (_byte) {
-						return A2(
-							elm$core$List$append,
-							acc,
-							_List_fromArray(
-								[_byte]));
-					}(
-						(x1 * A2(elm$core$Basics$pow, 2, 4)) + x0);
-					var $temp$chars = rest,
-						$temp$acc = acc2;
-					chars = $temp$chars;
-					acc = $temp$acc;
-					continue accHex2;
-				} else {
-					return _List_Nil;
-				}
-			} else {
-				return acc;
-			}
-		}
-	});
-var arnau$elm_objecthash$Word$Hex$toByteList = function (hex) {
-	return A2(
-		arnau$elm_objecthash$Word$Hex$accHex2,
-		elm$core$String$toList(hex),
-		_List_Nil);
-};
 var arnau$elm_objecthash$Objecthash$Hash$primitive = F2(
 	function (tag, input) {
 		return arnau$elm_objecthash$Word$Hex$toByteList(
@@ -6725,10 +6756,6 @@ var arnau$elm_objecthash$Objecthash$Tag$Unicode = {$: 'Unicode'};
 var arnau$elm_objecthash$Objecthash$Hash$unicode = function (input) {
 	return A2(arnau$elm_objecthash$Objecthash$Hash$primitive, arnau$elm_objecthash$Objecthash$Tag$Unicode, input);
 };
-var author$project$Seal$Redacted = F2(
-	function (a, b) {
-		return {$: 'Redacted', a: a, b: b};
-	});
 var author$project$Seal$map = F2(
 	function (fn, seal) {
 		if (seal.$ === 'Open') {
@@ -6747,7 +6774,10 @@ var author$project$Seal$map = F2(
 	});
 var author$project$Seal$update = F2(
 	function (value, seal) {
-		return A2(
+		return author$project$Seal$isTokenRedacted(value) ? A2(
+			author$project$Seal$Redacted,
+			value,
+			arnau$elm_objecthash$Objecthash$Hash$redacted(value)) : A2(
 			author$project$Seal$map,
 			function (_n0) {
 				return value;
@@ -7135,6 +7165,14 @@ var author$project$Main$addPair = F2(
 				author$project$Value$empty(card),
 				blob));
 	});
+var author$project$Seal$isLocked = function (seal) {
+	if (seal.$ === 'Open') {
+		return false;
+	} else {
+		var str = seal.a;
+		return author$project$Seal$isTokenRedacted(str);
+	}
+};
 var author$project$Seal$open = function (seal) {
 	if (seal.$ === 'Redacted') {
 		var str = seal.a;
@@ -7156,10 +7194,15 @@ var author$project$Seal$redact = function (seal) {
 	}
 };
 var author$project$Seal$toggle = function (seal) {
-	if (seal.$ === 'Open') {
-		return author$project$Seal$redact(seal);
+	if (author$project$Seal$isLocked(seal)) {
+		return seal;
 	} else {
-		return author$project$Seal$open(seal);
+		if (seal.$ === 'Open') {
+			return author$project$Seal$redact(seal);
+		} else {
+			var str = seal.a;
+			return author$project$Seal$open(seal);
+		}
 	}
 };
 var author$project$Value$redact = F2(
@@ -7345,7 +7388,6 @@ var elm$json$Json$Decode$Index = F2(
 var elm$json$Json$Decode$OneOf = function (a) {
 	return {$: 'OneOf', a: a};
 };
-var elm$core$Basics$and = _Basics_and;
 var elm$core$Char$isLower = function (_char) {
 	var code = elm$core$Char$toCode(_char);
 	return (97 <= code) && (code <= 122);
@@ -7375,7 +7417,6 @@ var elm$core$List$indexedMap = F2(
 				elm$core$List$length(xs) - 1),
 			xs);
 	});
-var elm$core$String$all = _String_all;
 var elm$core$String$fromInt = _String_fromNumber;
 var elm$core$String$join = F2(
 	function (sep, chunks) {
@@ -7671,6 +7712,54 @@ var author$project$Seal$isRedacted = function (seal) {
 		return true;
 	}
 };
+var elm$core$Debug$log = _Debug_log;
+var elm$html$Html$button = _VirtualDom_node('button');
+var elm$json$Json$Encode$bool = _Json_wrap;
+var elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$bool(bool));
+	});
+var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
+var author$project$Main$redactButton = F2(
+	function (_n0, seal) {
+		var idx = _n0.a;
+		var name = _n0.b;
+		var _n1 = A2(elm$core$Debug$log, '', seal);
+		return author$project$Seal$isLocked(seal) ? elm$html$Html$text('') : A2(
+			elm$html$Html$button,
+			_List_fromArray(
+				[
+					elm$html$Html$Events$onClick(
+					A2(author$project$Main$SealToggle, idx, name)),
+					elm$html$Html$Attributes$disabled(
+					author$project$Seal$isEmpty(seal))
+				]),
+			_List_fromArray(
+				[
+					elm$html$Html$text(
+					author$project$Seal$isRedacted(seal) ? 'Open' : 'Redact')
+				]));
+	});
 var arnau$elm_objecthash$Word$Hex$fromByte = arnau$elm_objecthash$Word$Hex$fromInt(2);
 var arnau$elm_objecthash$Word$Hex$fromList = function (toHex) {
 	return A2(
@@ -7697,18 +7786,10 @@ var author$project$Seal$toStringWithPrefix = function (seal) {
 		return '**REDACTED**' + arnau$elm_objecthash$Objecthash$Hash$toHex(bytes);
 	}
 };
-var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
-var elm$json$Json$Encode$bool = _Json_wrap;
-var elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$bool(bool));
-	});
-var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
+var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
 var elm$json$Json$Encode$string = _Json_wrap;
 var elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
@@ -7718,23 +7799,6 @@ var elm$html$Html$Attributes$stringProperty = F2(
 			elm$json$Json$Encode$string(string));
 	});
 var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
-};
 var elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -7786,23 +7850,17 @@ var author$project$Main$viewSeal = F2(
 							elm$html$Html$Events$onInput(
 							A2(author$project$Main$ChangeVal, name, idx)),
 							elm$html$Html$Attributes$disabled(
-							author$project$Seal$isRedacted(seal))
+							author$project$Seal$isRedacted(seal)),
+							A2(elm$html$Html$Attributes$style, 'color', 'hotpink'),
+							A2(elm$html$Html$Attributes$style, 'width', '75%'),
+							A2(elm$html$Html$Attributes$style, 'display', 'inline-block'),
+							A2(elm$html$Html$Attributes$style, 'margin-right', '8px')
 						]),
 					_List_Nil),
 					A2(
-					elm$html$Html$button,
-					_List_fromArray(
-						[
-							elm$html$Html$Events$onClick(
-							A2(author$project$Main$SealToggle, idx, name)),
-							elm$html$Html$Attributes$disabled(
-							author$project$Seal$isEmpty(seal))
-						]),
-					_List_fromArray(
-						[
-							elm$html$Html$text(
-							author$project$Seal$isRedacted(seal) ? 'Open' : 'Redact')
-						]))
+					author$project$Main$redactButton,
+					_Utils_Tuple2(idx, name),
+					seal)
 				]));
 	});
 var elm$core$Array$toIndexedList = function (array) {
@@ -7835,15 +7893,26 @@ var author$project$Main$viewValue = F2(
 					name,
 					_Utils_Tuple2(0, seal)),
 					A2(
-					elm$html$Html$button,
+					elm$html$Html$div,
 					_List_fromArray(
 						[
-							elm$html$Html$Events$onClick(
-							author$project$Main$Remove(name))
+							A2(elm$html$Html$Attributes$style, 'background-color', '#ececec'),
+							A2(elm$html$Html$Attributes$style, 'margin', '8px 0 0'),
+							A2(elm$html$Html$Attributes$style, 'padding', '4px')
 						]),
 					_List_fromArray(
 						[
-							elm$html$Html$text('Remove')
+							A2(
+							elm$html$Html$button,
+							_List_fromArray(
+								[
+									elm$html$Html$Events$onClick(
+									author$project$Main$Remove(name))
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text('Remove')
+								]))
 						]))
 				]);
 		} else {
@@ -7856,51 +7925,65 @@ var author$project$Main$viewValue = F2(
 				_List_fromArray(
 					[
 						A2(
-						elm$html$Html$button,
+						elm$html$Html$div,
 						_List_fromArray(
 							[
-								elm$html$Html$Events$onClick(
-								author$project$Main$AddValue(name))
+								A2(elm$html$Html$Attributes$style, 'background-color', '#ececec'),
+								A2(elm$html$Html$Attributes$style, 'margin', '8px 0 0'),
+								A2(elm$html$Html$Attributes$style, 'padding', '4px')
 							]),
 						_List_fromArray(
 							[
-								elm$html$Html$text('+')
-							])),
-						A2(
-						elm$html$Html$button,
-						_List_fromArray(
-							[
-								elm$html$Html$Events$onClick(
-								author$project$Main$RemoveValue(name))
-							]),
-						_List_fromArray(
-							[
-								elm$html$Html$text('-')
-							])),
-						A2(
-						elm$html$Html$button,
-						_List_fromArray(
-							[
-								elm$html$Html$Events$onClick(
-								author$project$Main$Remove(name))
-							]),
-						_List_fromArray(
-							[
-								elm$html$Html$text('Remove')
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Events$onClick(
+										author$project$Main$AddValue(name))
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('+')
+									])),
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Events$onClick(
+										author$project$Main$RemoveValue(name))
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('-')
+									])),
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Events$onClick(
+										author$project$Main$Remove(name))
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('Remove')
+									]))
 							]))
 					]));
 		}
 	});
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$Attributes$id = elm$html$Html$Attributes$stringProperty('id');
-var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
 var author$project$Main$viewPair = function (_n0) {
 	var name = _n0.a;
 	var value = _n0.b;
 	return A2(
 		elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				A2(elm$html$Html$Attributes$style, 'background-color', '#f3f3f3'),
+				A2(elm$html$Html$Attributes$style, 'margin', '8px 0'),
+				A2(elm$html$Html$Attributes$style, 'padding', '8px')
+			]),
 		_Utils_ap(
 			_List_fromArray(
 				[
@@ -7908,9 +7991,8 @@ var author$project$Main$viewPair = function (_n0) {
 					elm$html$Html$span,
 					_List_fromArray(
 						[
-							A2(elm$html$Html$Attributes$style, 'background-color', '#f3f3f3'),
 							A2(elm$html$Html$Attributes$style, 'display', 'inline-block'),
-							A2(elm$html$Html$Attributes$style, 'padding', '4px')
+							A2(elm$html$Html$Attributes$style, 'margin', '4px 0')
 						]),
 					_List_fromArray(
 						[
@@ -7921,10 +8003,11 @@ var author$project$Main$viewPair = function (_n0) {
 									elm$html$Html$Attributes$id(name + '-attr'),
 									elm$html$Html$Attributes$value(name),
 									elm$html$Html$Events$onInput(
-									author$project$Main$ChangeAttr(name))
+									author$project$Main$ChangeAttr(name)),
+									A2(elm$html$Html$Attributes$style, 'color', 'cornflowerblue')
 								]),
 							_List_Nil),
-							elm$html$Html$text(': ')
+							elm$html$Html$text(' : ')
 						]))
 				]),
 			A2(author$project$Main$viewValue, name, value)));
@@ -8324,8 +8407,6 @@ var author$project$Main$viewBlot = function (blot) {
 var elm$core$Basics$negate = function (n) {
 	return -n;
 };
-var elm$core$String$length = _String_length;
-var elm$core$String$slice = _String_slice;
 var elm$core$String$right = F2(
 	function (n, string) {
 		return (n < 1) ? '' : A3(
@@ -8850,15 +8931,6 @@ var elm$core$Task$perform = F2(
 			elm$core$Task$Perform(
 				A2(elm$core$Task$map, toMessage, task)));
 	});
-var elm$core$String$dropLeft = F2(
-	function (n, string) {
-		return (n < 1) ? string : A3(
-			elm$core$String$slice,
-			n,
-			elm$core$String$length(string),
-			string);
-	});
-var elm$core$String$startsWith = _String_startsWith;
 var elm$url$Url$Http = {$: 'Http'};
 var elm$url$Url$Https = {$: 'Https'};
 var elm$core$String$indexes = _String_indexes;
