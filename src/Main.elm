@@ -151,6 +151,7 @@ viewSeal name ( idx, seal ) =
             [ At.value (Seal.toStringWithPrefix seal)
             , onInput (ChangeVal name idx)
             , At.disabled (Seal.isRedacted seal)
+            , At.style "color" "hotpink"
             ]
             []
         , button
@@ -195,7 +196,13 @@ viewPair ( name, value ) =
             , At.style "display" "inline-block"
             , At.style "padding" "4px"
             ]
-            [ input [ At.id (name ++ "-attr"), At.value name, onInput (ChangeAttr name) ] []
+            [ input
+                [ At.id (name ++ "-attr")
+                , At.value name
+                , onInput (ChangeAttr name)
+                , At.style "color" "cornflowerblue"
+                ]
+                []
             , text ": "
             ]
          ]
