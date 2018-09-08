@@ -361,9 +361,18 @@ viewStep step =
         Blot.DictBlot inner ->
             div []
                 [ h2 [] [ text "Pairs" ]
-                , p [] [ text """Takes each (name, value) pair and hashes leaf
-                values. For illustration purposes, sets are not entirely
-                hashed yet.""" ]
+                , p []
+                    [ text """Takes each (name, value) pair, tags each leaf
+                value with """
+                    , code [] [ text "0x75" ]
+                    , text """ and hashes
+                them. For illustration purposes, sets are not entirely
+                hashed yet. But next step shows sets tagged with """
+                    , code
+                        []
+                        [ text "0x73" ]
+                    , text " and hashed."
+                    ]
                 , div []
                     (case Dict.toList inner of
                         [] ->
@@ -451,9 +460,6 @@ taggingSection =
         , ul []
             [ li []
                 [ text "Dict: ", code [] [ text "0x64" ] ]
-            , li
-                []
-                [ text "Hash: ", code [] [ text "0x72" ] ]
             , li
                 []
                 [ text "Set: ", code [] [ text "0x73" ] ]

@@ -7626,20 +7626,6 @@ var author$project$Main$taggingSection = A2(
 					_List_Nil,
 					_List_fromArray(
 						[
-							elm$html$Html$text('Hash: '),
-							A2(
-							elm$html$Html$code,
-							_List_Nil,
-							_List_fromArray(
-								[
-									elm$html$Html$text('0x72')
-								]))
-						])),
-					A2(
-					elm$html$Html$li,
-					_List_Nil,
-					_List_fromArray(
-						[
 							elm$html$Html$text('Set: '),
 							A2(
 							elm$html$Html$code,
@@ -8605,7 +8591,23 @@ var author$project$Main$viewStep = function (step) {
 						_List_Nil,
 						_List_fromArray(
 							[
-								elm$html$Html$text('Takes each (name, value) pair and hashes leaf\n                values. For illustration purposes, sets are not entirely\n                hashed yet.')
+								elm$html$Html$text('Takes each (name, value) pair, tags each leaf\n                value with '),
+								A2(
+								elm$html$Html$code,
+								_List_Nil,
+								_List_fromArray(
+									[
+										elm$html$Html$text('0x75')
+									])),
+								elm$html$Html$text(' and hashes\n                them. For illustration purposes, sets are not entirely\n                hashed yet. But next step shows sets tagged with '),
+								A2(
+								elm$html$Html$code,
+								_List_Nil,
+								_List_fromArray(
+									[
+										elm$html$Html$text('0x73')
+									])),
+								elm$html$Html$text(' and hashed.')
 							])),
 						A2(
 						elm$html$Html$div,
