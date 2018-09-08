@@ -8,6 +8,7 @@ import Dict exposing (Dict)
 import Html
     exposing
         ( Html
+        , a
         , button
         , code
         , div
@@ -16,13 +17,17 @@ import Html
         , h3
         , input
         , label
+        , li
         , node
         , option
         , p
         , pre
+        , section
         , select
         , span
+        , strong
         , text
+        , ul
         )
 import Html.Attributes as At
 import Html.Events exposing (onClick, onInput)
@@ -232,14 +237,32 @@ view model =
         , At.style "grid-template-columns" "1fr 1fr"
         , At.style "grid-template-rows" "auto"
         ]
-        [ style [] [ text "body { margin: 0}" ]
+        [ style []
+            [ text """
+            body { margin: 0 }
+            code { color: tomato }
+            pre > code { color: black }
+            """
+            ]
         , div
             [ At.style "min-height" "100vh"
             , At.style "padding" "16px"
             , At.style "box-sizing" "border-box"
             ]
             (List.concat
-                [ [ h1 [] [ text "Blot playground (objecthash)" ] ]
+                [ [ h1 [] [ text "Blot playground" ]
+                  , p []
+                        [ text "This is an illustrated implementation of the "
+                        , a
+                            [ At.href
+                                "https://github.com/benlaurie/objecthash"
+                            ]
+                            [ text
+                                "objecthash"
+                            ]
+                        , text " algorithm."
+                        ]
+                  ]
                 , viewBlob model.source
                 , [ viewToolbar model.next ]
                 ]
@@ -249,7 +272,9 @@ view model =
             , At.style "padding" "16px"
             , At.style "box-sizing" "border-box"
             ]
-            [ viewSteps model ]
+            [ viewSteps model
+            , taggingSection
+            ]
         ]
 
 
@@ -267,12 +292,24 @@ viewStep step =
         Blot.Leaf inner ->
             div []
                 [ h2 [] [ text "Result" ]
+                , p []
+                    [ text """Finally, the ordered list from the previous step
+                    is tagged with """
+                    , code [] [ text "0x64" ]
+                    , text " and hashed one last time."
+                    ]
                 , viewBlot (Blot.toHex inner)
                 ]
 
         Blot.DictLeaves inner ->
             div []
                 [ h2 [] [ text "Combined pairs" ]
+                , p []
+                    [ text """Takes each (name, hash) pair from the previous
+                    step, hashes the name and concatenates it with the hash of
+                    the value."""
+                    , text """ The result is then sorted."""
+                    ]
                 , div []
                     (case inner of
                         [] ->
@@ -286,6 +323,9 @@ viewStep step =
         Blot.DictBlot inner ->
             div []
                 [ h2 [] [ text "Pairs" ]
+                , p [] [ text """Takes each (name, value) pair and hashes leaf
+                values. For illustration purposes, sets are not entirely
+                hashed yet.""" ]
                 , div []
                     (case Dict.toList inner of
                         [] ->
@@ -334,3 +374,28 @@ viewBlot hash =
         , At.style "box-sizing" "border-box"
         ]
         [ code [] [ text hash ] ]
+
+
+taggingSection =
+    section []
+        [ h2 [] [ text "Tags" ]
+        , p []
+            [ text "A "
+            , strong [] [ text "tag" ]
+            , text " is a byte identifying the type of data structure being hashed."
+            , text " The tag is prepended to the data structure about to be hashed."
+            ]
+        , ul []
+            [ li []
+                [ text "Dict: ", code [] [ text "0x64" ] ]
+            , li
+                []
+                [ text "Hash: ", code [] [ text "0x72" ] ]
+            , li
+                []
+                [ text "Set: ", code [] [ text "0x73" ] ]
+            , li
+                []
+                [ text "String: ", code [] [ text "0x75" ] ]
+            ]
+        ]

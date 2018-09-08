@@ -7524,6 +7524,106 @@ var author$project$Main$style = F2(
 	function (attributes, children) {
 		return A3(elm$html$Html$node, 'style', attributes, children);
 	});
+var elm$html$Html$code = _VirtualDom_node('code');
+var elm$html$Html$h2 = _VirtualDom_node('h2');
+var elm$html$Html$li = _VirtualDom_node('li');
+var elm$html$Html$p = _VirtualDom_node('p');
+var elm$html$Html$section = _VirtualDom_node('section');
+var elm$html$Html$strong = _VirtualDom_node('strong');
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var elm$html$Html$ul = _VirtualDom_node('ul');
+var author$project$Main$taggingSection = A2(
+	elm$html$Html$section,
+	_List_Nil,
+	_List_fromArray(
+		[
+			A2(
+			elm$html$Html$h2,
+			_List_Nil,
+			_List_fromArray(
+				[
+					elm$html$Html$text('Tags')
+				])),
+			A2(
+			elm$html$Html$p,
+			_List_Nil,
+			_List_fromArray(
+				[
+					elm$html$Html$text('A '),
+					A2(
+					elm$html$Html$strong,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text('tag')
+						])),
+					elm$html$Html$text(' is a byte identifying the type of data structure being hashed.'),
+					elm$html$Html$text(' The tag is prepended to the data structure about to be hashed.')
+				])),
+			A2(
+			elm$html$Html$ul,
+			_List_Nil,
+			_List_fromArray(
+				[
+					A2(
+					elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text('Dict: '),
+							A2(
+							elm$html$Html$code,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('0x64')
+								]))
+						])),
+					A2(
+					elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text('Hash: '),
+							A2(
+							elm$html$Html$code,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('0x72')
+								]))
+						])),
+					A2(
+					elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text('Set: '),
+							A2(
+							elm$html$Html$code,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('0x73')
+								]))
+						])),
+					A2(
+					elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							elm$html$Html$text('String: '),
+							A2(
+							elm$html$Html$code,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text('0x75')
+								]))
+						]))
+				]))
+		]));
 var author$project$Blob$toList = function (_n0) {
 	var bare = _n0.a;
 	return bare;
@@ -7600,8 +7700,6 @@ var author$project$Seal$toStringWithPrefix = function (seal) {
 var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var elm$json$Json$Encode$bool = _Json_wrap;
 var elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -8202,7 +8300,6 @@ var author$project$Blot$steps = function (blob) {
 var author$project$Blot$toHex = function (bytes) {
 	return arnau$elm_objecthash$Objecthash$Hash$toHex(bytes);
 };
-var elm$html$Html$code = _VirtualDom_node('code');
 var elm$html$Html$pre = _VirtualDom_node('pre');
 var author$project$Main$viewBlot = function (hash) {
 	return A2(
@@ -8250,8 +8347,6 @@ var author$project$Main$viewDictPair = function (_n0) {
 	}
 };
 var elm$core$Debug$toString = _Debug_toString;
-var elm$html$Html$h2 = _VirtualDom_node('h2');
-var elm$html$Html$p = _VirtualDom_node('p');
 var author$project$Main$viewStep = function (step) {
 	var _n0 = step.blot;
 	switch (_n0.$) {
@@ -8269,6 +8364,21 @@ var author$project$Main$viewStep = function (step) {
 							[
 								elm$html$Html$text('Result')
 							])),
+						A2(
+						elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('Finally, the ordered list from the previous step\n                    is tagged with '),
+								A2(
+								elm$html$Html$code,
+								_List_Nil,
+								_List_fromArray(
+									[
+										elm$html$Html$text('0x64')
+									])),
+								elm$html$Html$text(' and hashed one last time.')
+							])),
 						author$project$Main$viewBlot(
 						author$project$Blot$toHex(inner))
 					]));
@@ -8285,6 +8395,14 @@ var author$project$Main$viewStep = function (step) {
 						_List_fromArray(
 							[
 								elm$html$Html$text('Combined pairs')
+							])),
+						A2(
+						elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('Takes each (name, hash) pair from the previous\n                    step, hashes the name and concatenates it with the hash of\n                    the value.'),
+								elm$html$Html$text(' The result is then sorted.')
 							])),
 						A2(
 						elm$html$Html$div,
@@ -8313,6 +8431,13 @@ var author$project$Main$viewStep = function (step) {
 						_List_fromArray(
 							[
 								elm$html$Html$text('Pairs')
+							])),
+						A2(
+						elm$html$Html$p,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text('Takes each (name, value) pair and hashes leaf\n                values. For illustration purposes, sets are not entirely\n                hashed yet.')
 							])),
 						A2(
 						elm$html$Html$div,
@@ -8452,6 +8577,13 @@ var author$project$Main$viewToolbar = function (next) {
 					]))
 			]));
 };
+var elm$html$Html$a = _VirtualDom_node('a');
+var elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$div,
@@ -8468,7 +8600,7 @@ var author$project$Main$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						elm$html$Html$text('body { margin: 0}')
+						elm$html$Html$text('\n            body { margin: 0 }\n            code { color: tomato }\n            pre > code { color: black }\n            ')
 					])),
 				A2(
 				elm$html$Html$div,
@@ -8488,7 +8620,25 @@ var author$project$Main$view = function (model) {
 								_List_Nil,
 								_List_fromArray(
 									[
-										elm$html$Html$text('Blot playground (objecthash)')
+										elm$html$Html$text('Blot playground')
+									])),
+								A2(
+								elm$html$Html$p,
+								_List_Nil,
+								_List_fromArray(
+									[
+										elm$html$Html$text('This is an illustrated implementation of the '),
+										A2(
+										elm$html$Html$a,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$href('https://github.com/benlaurie/objecthash')
+											]),
+										_List_fromArray(
+											[
+												elm$html$Html$text('objecthash')
+											])),
+										elm$html$Html$text(' algorithm.')
 									]))
 							]),
 							author$project$Main$viewBlob(model.source),
@@ -8507,7 +8657,8 @@ var author$project$Main$view = function (model) {
 					]),
 				_List_fromArray(
 					[
-						author$project$Main$viewSteps(model)
+						author$project$Main$viewSteps(model),
+						author$project$Main$taggingSection
 					]))
 			]));
 };
