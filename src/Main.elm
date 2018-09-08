@@ -298,7 +298,7 @@ viewStep step =
                     , code [] [ text "0x64" ]
                     , text " and hashed one last time."
                     ]
-                , viewBlot (Blot.toHex inner)
+                , viewBlot <| text (Blot.toHex inner)
                 ]
 
         Blot.DictLeaves inner ->
@@ -343,29 +343,54 @@ viewStep step =
 
 viewDictLeave : Blot.Bytes -> Html Msg
 viewDictLeave bytes =
-    viewBlot (Blot.toHex bytes)
+    let
+        hex =
+            Blot.toHex bytes
+
+        val =
+            span [ At.style "color" "hotpink" ] [ text (String.right 64 hex) ]
+
+        name =
+            span [ At.style "color" "cornflowerblue" ] [ text (String.right 64 hex) ]
+    in
+    viewBlot <| span [] [ name, val ]
 
 
 viewDictPair : ( String, Blot ) -> Html Msg
 viewDictPair ( name, blot ) =
+    let
+        name_ =
+            span [ At.style "color" "cornflowerblue" ] [ text name ]
+    in
     case blot of
         Blot.Leaf bytes ->
-            viewBlot (name ++ ": " ++ Blot.toHex bytes)
+            viewBlot <|
+                span []
+                    [ name_
+                    , text " : "
+                    , span [ At.style "color" "hotpink" ]
+                        [ text (Blot.toHex bytes)
+                        ]
+                    ]
 
         Blot.SetBlot inner ->
-            viewBlot
-                (name
-                    ++ ": [ "
-                    ++ String.join ", " (List.map Blot.toHex inner)
-                    ++ " ] "
-                )
+            viewBlot <|
+                span []
+                    [ name_
+                    , text " : "
+                    , span [ At.style "color" "hotpink" ]
+                        [ text "[ "
+                        , text (String.join ", " (List.map Blot.toHex inner))
+                        , text " ]"
+                        ]
+                    ]
 
         _ ->
             text ""
 
 
-viewBlot : String -> Html Msg
-viewBlot hash =
+viewBlot : Html Msg -> Html Msg
+viewBlot blot =
     pre
         [ At.style "width" "50vw"
         , At.style "overflow-x" "auto"
@@ -373,7 +398,7 @@ viewBlot hash =
         , At.style "padding" "16px"
         , At.style "box-sizing" "border-box"
         ]
-        [ code [] [ text hash ] ]
+        [ code [] [ blot ] ]
 
 
 taggingSection =

@@ -8301,7 +8301,7 @@ var author$project$Blot$toHex = function (bytes) {
 	return arnau$elm_objecthash$Objecthash$Hash$toHex(bytes);
 };
 var elm$html$Html$pre = _VirtualDom_node('pre');
-var author$project$Main$viewBlot = function (hash) {
+var author$project$Main$viewBlot = function (blot) {
 	return A2(
 		elm$html$Html$pre,
 		_List_fromArray(
@@ -8318,30 +8318,116 @@ var author$project$Main$viewBlot = function (hash) {
 				elm$html$Html$code,
 				_List_Nil,
 				_List_fromArray(
-					[
-						elm$html$Html$text(hash)
-					]))
+					[blot]))
 			]));
 };
+var elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var elm$core$String$length = _String_length;
+var elm$core$String$slice = _String_slice;
+var elm$core$String$right = F2(
+	function (n, string) {
+		return (n < 1) ? '' : A3(
+			elm$core$String$slice,
+			-n,
+			elm$core$String$length(string),
+			string);
+	});
 var author$project$Main$viewDictLeave = function (bytes) {
+	var hex = author$project$Blot$toHex(bytes);
+	var name = A2(
+		elm$html$Html$span,
+		_List_fromArray(
+			[
+				A2(elm$html$Html$Attributes$style, 'color', 'cornflowerblue')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text(
+				A2(elm$core$String$right, 64, hex))
+			]));
+	var val = A2(
+		elm$html$Html$span,
+		_List_fromArray(
+			[
+				A2(elm$html$Html$Attributes$style, 'color', 'hotpink')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text(
+				A2(elm$core$String$right, 64, hex))
+			]));
 	return author$project$Main$viewBlot(
-		author$project$Blot$toHex(bytes));
+		A2(
+			elm$html$Html$span,
+			_List_Nil,
+			_List_fromArray(
+				[name, val])));
 };
 var author$project$Main$viewDictPair = function (_n0) {
 	var name = _n0.a;
 	var blot = _n0.b;
+	var name_ = A2(
+		elm$html$Html$span,
+		_List_fromArray(
+			[
+				A2(elm$html$Html$Attributes$style, 'color', 'cornflowerblue')
+			]),
+		_List_fromArray(
+			[
+				elm$html$Html$text(name)
+			]));
 	switch (blot.$) {
 		case 'Leaf':
 			var bytes = blot.a;
 			return author$project$Main$viewBlot(
-				name + (': ' + author$project$Blot$toHex(bytes)));
+				A2(
+					elm$html$Html$span,
+					_List_Nil,
+					_List_fromArray(
+						[
+							name_,
+							elm$html$Html$text(' : '),
+							A2(
+							elm$html$Html$span,
+							_List_fromArray(
+								[
+									A2(elm$html$Html$Attributes$style, 'color', 'hotpink')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text(
+									author$project$Blot$toHex(bytes))
+								]))
+						])));
 		case 'SetBlot':
 			var inner = blot.a;
 			return author$project$Main$viewBlot(
-				name + (': [ ' + (A2(
-					elm$core$String$join,
-					', ',
-					A2(elm$core$List$map, author$project$Blot$toHex, inner)) + ' ] ')));
+				A2(
+					elm$html$Html$span,
+					_List_Nil,
+					_List_fromArray(
+						[
+							name_,
+							elm$html$Html$text(' : '),
+							A2(
+							elm$html$Html$span,
+							_List_fromArray(
+								[
+									A2(elm$html$Html$Attributes$style, 'color', 'hotpink')
+								]),
+							_List_fromArray(
+								[
+									elm$html$Html$text('[ '),
+									elm$html$Html$text(
+									A2(
+										elm$core$String$join,
+										', ',
+										A2(elm$core$List$map, author$project$Blot$toHex, inner))),
+									elm$html$Html$text(' ]')
+								]))
+						])));
 		default:
 			return elm$html$Html$text('');
 	}
@@ -8380,7 +8466,8 @@ var author$project$Main$viewStep = function (step) {
 								elm$html$Html$text(' and hashed one last time.')
 							])),
 						author$project$Main$viewBlot(
-						author$project$Blot$toHex(inner))
+						elm$html$Html$text(
+							author$project$Blot$toHex(inner)))
 					]));
 		case 'DictLeaves':
 			var inner = _n0.a;
@@ -8763,8 +8850,6 @@ var elm$core$Task$perform = F2(
 			elm$core$Task$Perform(
 				A2(elm$core$Task$map, toMessage, task)));
 	});
-var elm$core$String$length = _String_length;
-var elm$core$String$slice = _String_slice;
 var elm$core$String$dropLeft = F2(
 	function (n, string) {
 		return (n < 1) ? string : A3(
