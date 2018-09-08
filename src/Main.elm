@@ -191,7 +191,7 @@ viewPair : ( String, Value.Value ) -> Html Msg
 viewPair ( name, value ) =
     div []
         ([ span
-            [ At.style "background-color" "antiquewhite"
+            [ At.style "background-color" "#f3f3f3"
             , At.style "display" "inline-block"
             , At.style "padding" "4px"
             ]
@@ -268,7 +268,7 @@ view model =
                 ]
             )
         , div
-            [ At.style "background-color" "ivory"
+            [ At.style "background-color" "#f9f9f9"
             , At.style "padding" "16px"
             , At.style "box-sizing" "border-box"
             ]
@@ -394,7 +394,7 @@ viewBlot blot =
     pre
         [ At.style "width" "50vw"
         , At.style "overflow-x" "auto"
-        , At.style "background-color" "antiquewhite"
+        , At.style "background-color" "#f3f3f3"
         , At.style "padding" "16px"
         , At.style "box-sizing" "border-box"
         ]
